@@ -1,3 +1,4 @@
+using FleetFuel.Api.Middleware;
 using FleetFuel.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
