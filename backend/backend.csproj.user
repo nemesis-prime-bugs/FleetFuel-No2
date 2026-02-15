@@ -1,0 +1,43 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning",
+      "Microsoft.EntityFrameworkCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "DatabaseConnectionString": "Data Source=fleetfuel.db"
+  },
+  "Supabase": {
+    "Url": "https://brbvzgpemmpytwofcrpu.supabase.co",
+    "AnonKey": "TODO: Use environment variable"
+  },
+  "Frontend": {
+    "Url": "http://localhost:3000"
+  },
+  "FileUpload": {
+    "MaxFileSizeMB": 5,
+    "AllowedTypes": "image/jpeg,image/png",
+    "BasePath": "./uploads"
+  },
+  "Serilog": {
+    "Using": ["Serilog.Sinks.Console"],
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Warning",
+        "Microsoft.EntityFrameworkCore": "Warning"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "Console",
+        "Args": {
+          "outputTemplate": "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
+        }
+      }
+    ]
+  }
+}
