@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/client';
+import { supabase } from '@/lib/supabase';
 
 export interface Vehicle {
   id: string;
@@ -26,7 +26,6 @@ export interface UpdateVehicleRequest {
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export async function getVehicles(): Promise<Vehicle[]> {
-  const supabase = createClient();
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) throw new Error('Not authenticated');
@@ -45,7 +44,6 @@ export async function getVehicles(): Promise<Vehicle[]> {
 }
 
 export async function getVehicle(id: string): Promise<Vehicle> {
-  const supabase = createClient();
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) throw new Error('Not authenticated');
@@ -64,7 +62,6 @@ export async function getVehicle(id: string): Promise<Vehicle> {
 }
 
 export async function createVehicle(data: CreateVehicleRequest): Promise<Vehicle> {
-  const supabase = createClient();
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) throw new Error('Not authenticated');
@@ -87,7 +84,6 @@ export async function createVehicle(data: CreateVehicleRequest): Promise<Vehicle
 }
 
 export async function updateVehicle(id: string, data: UpdateVehicleRequest): Promise<Vehicle> {
-  const supabase = createClient();
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) throw new Error('Not authenticated');
@@ -110,7 +106,6 @@ export async function updateVehicle(id: string, data: UpdateVehicleRequest): Pro
 }
 
 export async function deleteVehicle(id: string): Promise<void> {
-  const supabase = createClient();
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) throw new Error('Not authenticated');
