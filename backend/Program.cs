@@ -57,6 +57,10 @@ try
 
     app.UseSerilogRequestLogging();
     app.UseCors("AllowFrontend");
+    
+    // Supabase JWT token validation (TASK-16)
+    app.UseSupabaseJwtValidation();
+    
     app.UseAuthorization();
     app.MapControllers();
 
