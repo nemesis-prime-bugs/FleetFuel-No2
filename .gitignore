@@ -1,0 +1,82 @@
+# FleetFuel .gitignore
+# Security: Keep secrets out of version control!
+
+# ============================================
+# Environment & Secrets - CRITICAL
+# ============================================
+.env
+.env.local
+.env.*.local
+*.env
+*.pem
+*.key
+*.crt
+secrets/
+credentials/
+
+# ============================================
+# Database Files
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+FleetFuel.db
+
+# ============================================
+# Uploads / File Storage
+# ============================================
+uploads/
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.pdf
+receipts/
+images/
+
+# ============================================
+# Build Outputs
+# ============================================
+backend/bin/
+backend/obj/
+frontend/.next/
+frontend/out/
+frontend/node_modules/
+*.dll
+*.exe
+*.pdb
+
+# ============================================
+# IDE & Editor
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ============================================
+# Test Results
+# ============================================
+TestResults/
+coverage/
+*.cobertura.xml
+
+# ============================================
+# OS Files
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ============================================
+# Log Files
+# ============================================
+*.log
+logs/

@@ -1,0 +1,132 @@
+name: CI - Build and Test
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  # Only expose non-sensitive configuration
+  DOTNET_VERSION: '8.0'
+  NODE_VERSION: '20'
+
+jobs:
+  security-check:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Detect secrets with gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Check for .env files in commit
+        run: |
+          if git diff --cached --name-only | grep -q "\.env"; then
+            echo "❌ ERROR: .env files should not be committed!"
+            exit 1
+          fi
+          echo "✅ No .env files in commit"
+
+  backend-build:
+    name: Backend Build (.NET 8)
+    runs-on: ubuntu-latest
+    needs: security-check
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run unit tests
+        run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage"
+        continue-on-error: false
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./backend/TestResults/Coverage/coverage.cobertura.xml
+          fail_ci_if_error: false
+
+  frontend-build:
+    name: Frontend Build (Next.js)
+    runs-on: ubuntu-latest
+    needs: security-check
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-build
+          path: |
+            .next
+            public
+          retention-days: 7
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [backend-build, frontend-build]
+    # This job runs after both builds succeed
+    # Add integration tests here when APIs are ready
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check if app is healthy (smoke test placeholder)
+        run: |
+          echo "✅ Integration checks passed"
+          echo "ℹ️  Add actual integration tests when backend API is complete"
+
+  notify:
+    name: Notify on Failure
+    runs-on: ubuntu-latest
+    needs: [backend-build, frontend-build, integration-tests]
+    if: failure()
+    steps:
+      - name: Send failure notification
+        run: |
+          echo "❌ CI/CD Pipeline Failed!"
+          echo "Check the workflow logs for details."
+          # Optionally add Slack/Discord notification here
