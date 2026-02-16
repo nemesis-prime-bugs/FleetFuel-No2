@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+bin/
+obj/
+
+# Logs
+*.log
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
