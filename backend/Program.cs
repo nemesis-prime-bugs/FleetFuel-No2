@@ -63,6 +63,10 @@ try
     builder.Services.AddScoped<IBackupService, BackupService>();
     builder.Services.AddScoped<IMonitoringService, MonitoringService>();
     builder.Services.AddScoped<ISyncService, SyncService>();
+    builder.Services.AddScoped<IDeploymentMonitor, DeploymentMonitor>();
+
+    // Add HttpClient for external service calls
+    builder.Services.AddHttpClient<IDeploymentMonitor, DeploymentMonitor>();
 
     // Add Supabase JWT authentication (TASK-16)
     // builder.Services.AddAuthentication(...).AddJwtBearer(...);
@@ -88,8 +92,15 @@ try
     app.UseAuthorization();
     app.MapControllers();
 
-    // Health check endpoint
+    // Health check endpoints
     app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
+
+    // Full system health check (includes deployment monitoring)
+    app.MapGet("/health/full", async (IDeploymentMonitor monitor) => 
+    {
+        var report = await monitor.GetFullHealthReportAsync();
+        return Results.Ok(report);
+    });
 
     Log.Information("FleetFuel API started successfully");
     app.Run();
