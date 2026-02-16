@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import { CheckCircle, AlertCircle, Info, X } from 'lucide-react';
 
 interface Toast {
   id: string;
@@ -16,7 +17,7 @@ interface ToastContextType {
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
-const TOAST_DURATION = 3000;
+const TOAST_DURATION = 4000;
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -63,29 +64,47 @@ function ToastContainer({ toasts, onDismiss }: { toasts: Toast[]; onDismiss: (id
 }
 
 function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: string) => void }) {
-  const bgColors = {
-    success: 'bg-green-50 text-green-800 border-green-200',
-    error: 'bg-red-50 text-red-800 border-red-200',
-    info: 'bg-blue-50 text-blue-800 border-blue-200',
+  const styles = {
+    success: {
+      bg: 'bg-green-50 dark:bg-green-900/20',
+      border: 'border-green-200 dark:border-green-800',
+      text: 'text-green-800 dark:text-green-200',
+      icon: 'text-green-500 dark:text-green-400',
+    },
+    error: {
+      bg: 'bg-red-50 dark:bg-red-900/20',
+      border: 'border-red-200 dark:border-red-800',
+      text: 'text-red-800 dark:text-red-200',
+      icon: 'text-red-500 dark:text-red-400',
+    },
+    info: {
+      bg: 'bg-blue-50 dark:bg-blue-900/20',
+      border: 'border-blue-200 dark:border-blue-800',
+      text: 'text-blue-800 dark:text-blue-200',
+      icon: 'text-blue-500 dark:text-blue-400',
+    },
   };
+
+  const style = styles[toast.type];
+  const Icon = toast.type === 'success' ? CheckCircle : toast.type === 'error' ? AlertCircle : Info;
 
   return (
     <div
       className={`
-        px-4 py-3 rounded-md border shadow-sm text-sm
-        ${bgColors[toast.type]}
+        flex items-center gap-3 px-4 py-3 rounded-md border shadow-lg text-sm
+        ${style.bg} ${style.border} ${style.text}
         animate-fade-in
+        max-w-sm w-full
       `}
     >
-      <div className="flex items-center justify-between gap-4">
-        <span>{toast.message}</span>
-        <button
-          onClick={() => onDismiss(toast.id)}
-          className="text-current opacity-50 hover:opacity-100"
-        >
-          ×
-        </button>
-      </div>
+      <Icon className={`h-5 w-5 flex-shrink-0 ${style.icon}`} />
+      <span className="flex-1">{toast.message}</span>
+      <button
+        onClick={() => onDismiss(toast.id)}
+        className={`text-current opacity-50 hover:opacity-100 transition-opacity ${style.icon}`}
+      >
+        <X className="h-4 w-4" />
+      </button>
     </div>
   );
 }
