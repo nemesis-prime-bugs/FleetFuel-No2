@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { getVehicles, deleteVehicle, type Vehicle } from '@/lib/api/vehicles';
-import { NoVehiclesEmptyState } from '@/components/ui/EmptyState';
 import { useToast } from '@/components/ui/Toast';
 import { OnboardingGuide } from '@/components/OnboardingGuide';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Plus, Settings, Trash2 } from 'lucide-react';
 
 export default function VehiclesPage() {
   const { user, loading } = useAuth();
@@ -67,7 +69,8 @@ export default function VehiclesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow">
+      {/* Header */}
+      <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
@@ -76,16 +79,16 @@ export default function VehiclesPage() {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <Link
-                href="/vehicles/new"
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-              >
-                + Add Vehicle
+              <Link href="/vehicles/new">
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Vehicle
+                </Button>
               </Link>
             </div>
           </div>
         </div>
-      </nav>
+      </header>
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 sm:px-0">
@@ -96,47 +99,59 @@ export default function VehiclesPage() {
           <OnboardingGuide />
 
           {vehicles.length === 0 ? (
-            <div className="bg-white rounded-lg shadow">
-              <NoVehiclesEmptyState />
-            </div>
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <p className="text-muted-foreground mb-4">No vehicles yet</p>
+                <Link href="/vehicles/new">
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Your First Vehicle
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {vehicles.map(vehicle => (
-                <div
-                  key={vehicle.id}
-                  className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-medium text-gray-900">
-                        {vehicle.name}
-                      </h3>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {vehicle.license_plate}
+                <Card key={vehicle.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="pt-6">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="text-lg font-semibold">
+                          {vehicle.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {vehicle.license_plate}
+                        </p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Link href={`/vehicles/${vehicle.id}`}>
+                          <Button variant="ghost" size="icon">
+                            <Settings className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(vehicle.id)}
+                          disabled={deleting === vehicle.id}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          {deleting === vehicle.id ? (
+                            <span className="text-xs">...</span>
+                          ) : (
+                            <Trash2 className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t">
+                      <p className="text-sm text-muted-foreground">
+                        Initial mileage: <span className="font-medium text-foreground">{vehicle.initial_mileage.toLocaleString()} km</span>
                       </p>
                     </div>
-                    <div className="flex space-x-2">
-                      <Link
-                        href={`/vehicles/${vehicle.id}`}
-                        className="text-blue-600 hover:text-blue-500 text-sm font-medium"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(vehicle.id)}
-                        disabled={deleting === vehicle.id}
-                        className="text-red-600 hover:text-red-500 text-sm font-medium disabled:opacity-50"
-                      >
-                        {deleting === vehicle.id ? '...' : 'Delete'}
-                      </button>
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <p className="text-sm text-gray-600">
-                      Initial mileage: <span className="font-medium">{vehicle.initial_mileage.toLocaleString()} km</span>
-                    </p>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           )}

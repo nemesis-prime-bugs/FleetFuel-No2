@@ -5,6 +5,10 @@ import Link from 'next/link';
 import { OnboardingGuide } from '@/components/OnboardingGuide';
 import { getTrips, type Trip } from '@/lib/api/trips';
 import { useToast } from '@/components/ui/Toast';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Plus } from 'lucide-react';
 
 export default function TripsPage() {
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -44,82 +48,70 @@ export default function TripsPage() {
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-gray-900">Trips</h1>
-          <Link
-            href="/trips/new"
-            className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700"
-          >
-            + Log Trip
+          <Link href="/trips/new">
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Log Trip
+            </Button>
           </Link>
         </div>
 
         <OnboardingGuide />
 
         {trips.length === 0 ? (
-          <div className="bg-white shadow rounded-lg p-12 text-center">
-            <h3 className="text-lg font-medium text-gray-900">No trips yet</h3>
-            <p className="mt-2 text-gray-500">Log your first trip to start tracking.</p>
-            <div className="mt-6">
-              <Link
-                href="/trips/new"
-                className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700"
-              >
-                Log First Trip
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <p className="text-muted-foreground mb-4">No trips yet</p>
+              <Link href="/trips/new">
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Log Your First Trip
+                </Button>
               </Link>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         ) : (
-          <div className="bg-white shadow rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Vehicle
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Distance
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Purpose
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Type
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {trips.map((trip) => (
-                  <tr key={trip.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {trip.date}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {trip.vehicle?.name || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {trip.end_km - trip.start_km} km
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {trip.purpose || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          trip.is_business
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        {trip.is_business ? 'Business' : 'Private'}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>All Trips</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Vehicle</TableHead>
+                    <TableHead>Distance</TableHead>
+                    <TableHead>Purpose</TableHead>
+                    <TableHead>Type</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {trips.map((trip) => (
+                    <TableRow key={trip.id}>
+                      <TableCell>{trip.date}</TableCell>
+                      <TableCell>{trip.vehicle?.name || '-'}</TableCell>
+                      <TableCell>{(trip.end_km - trip.start_km).toLocaleString()} km</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {trip.purpose || '-'}
+                      </TableCell>
+                      <TableCell>
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            trip.is_business
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-gray-100 text-gray-800'
+                          }`}
+                        >
+                          {trip.is_business ? 'Business' : 'Private'}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>
