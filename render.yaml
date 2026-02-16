@@ -4,7 +4,6 @@ services:
     repo: https://github.com/nemesis-prime-bugs/FleetFuel-No2.git
     branch: main
     rootDir: backend
-    runtime: dotnetcore
     envVars:
       - key: SUPABASE_URL
         value: https://brbvzgpemmpytwofcrpu.supabase.co
