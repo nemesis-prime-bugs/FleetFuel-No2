@@ -17,7 +17,9 @@
 ---
 
 ## GitHub PAT
-- Token: `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`
+- **SECURITY NOTE:** PAT is stored securely in environment variables
+- Never commit PAT to code or documentation
+- Get PAT from: GitHub Settings → Developer settings → Personal access tokens
 
 ---
 
