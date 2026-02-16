@@ -1,4 +1,5 @@
 using FleetFuel.Data;
+using FleetFuel.Api.Repositories;
 
 namespace FleetFuel.Api.Services;
 

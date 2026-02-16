@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getVehicles, deleteVehicle, type Vehicle } from '@/lib/api/vehicles';
 import { NoVehiclesEmptyState } from '@/components/ui/EmptyState';
 import { useToast } from '@/components/ui/Toast';
+import { OnboardingGuide } from '@/components/OnboardingGuide';
 
 export default function VehiclesPage() {
   const { user, loading } = useAuth();
@@ -91,6 +92,8 @@ export default function VehiclesPage() {
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Vehicles</h1>
           </div>
+
+          <OnboardingGuide />
 
           {vehicles.length === 0 ? (
             <div className="bg-white rounded-lg shadow">

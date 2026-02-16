@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { createVehicle } from '@/lib/api/vehicles';
 import { useToast } from '@/components/ui/Toast';
+import { useOnboarding } from '@/contexts/OnboardingContext';
 
 const vehicleSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -20,6 +21,7 @@ type VehicleForm = z.infer<typeof vehicleSchema>;
 export default function NewVehiclePage() {
   const router = useRouter();
   const { showToast } = useToast();
+  const { markVehicleAdded } = useOnboarding();
   const [loading, setLoading] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<VehicleForm>({
@@ -37,7 +39,9 @@ export default function NewVehiclePage() {
         license_plate: data.license_plate.toUpperCase(),
         initial_mileage: data.initial_mileage,
       });
+      markVehicleAdded();
       showToast('Vehicle created successfully', 'success');
+      // Optionally redirect or stay to log a trip
       router.push('/vehicles');
     } catch (error) {
       showToast(error instanceof Error ? error.message : 'Failed to create vehicle', 'error');

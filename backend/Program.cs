@@ -1,4 +1,6 @@
 using FleetFuel.Api.Middleware;
+using FleetFuel.Api.Repositories;
+using FleetFuel.Api.Services;
 using FleetFuel.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -43,6 +45,17 @@ try
             .AllowCredentials();
         });
     });
+
+    // Register repositories
+    builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+    builder.Services.AddScoped<ITripRepository, TripRepository>();
+    builder.Services.AddScoped<IReceiptRepository, ReceiptRepository>();
+
+    // Register services
+    builder.Services.AddScoped<IVehicleService, VehicleService>();
+    builder.Services.AddScoped<ITripService, TripService>();
+    builder.Services.AddScoped<IReceiptService, ReceiptService>();
+    builder.Services.AddScoped<ISummaryService, SummaryService>();
 
     // Add Supabase JWT authentication (TASK-16)
     // builder.Services.AddAuthentication(...).AddJwtBearer(...);
