@@ -1,8 +1,7 @@
 services:
   - type: web
     name: fleetfuel-api
-    repoOwner: nemesis-prime-bugs
-    repoName: FleetFuel-No2
+    repo: https://github.com/nemesis-prime-bugs/FleetFuel-No2.git
     branch: main
     rootDir: backend
     runtime: dotnet8
