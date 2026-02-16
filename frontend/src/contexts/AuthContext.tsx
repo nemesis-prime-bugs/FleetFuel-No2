@@ -40,7 +40,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${typeof window !== 'undefined' ? window.location.origin : 'https://frontend-iota-lac-88.vercel.app'}/auth/callback`,
+      },
+    });
     return { error: error ? new Error(error.message) : null };
   };
 

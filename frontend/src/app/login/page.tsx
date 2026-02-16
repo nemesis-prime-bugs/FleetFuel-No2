@@ -36,7 +36,14 @@ export default function LoginPage() {
     const { error } = await signIn(data.email, data.password);
     
     if (error) {
-      setError(error.message);
+      const errorLower = error.message.toLowerCase();
+      if (errorLower.includes('email') && errorLower.includes('confirm')) {
+        setError('Please confirm your email address. Check your inbox for the confirmation link.');
+      } else if (errorLower.includes('invalid') || errorLower.includes('credentials')) {
+        setError('Invalid email or password. Please try again.');
+      } else {
+        setError(error.message);
+      }
       setLoading(false);
     } else {
       router.push('/dashboard');
