@@ -1,5 +1,37 @@
 # MEMORY.md - Core Long-Term Memory
 
+---
+
+## 🚨 CRITICAL SECURITY RULE: NEVER Deploy Secrets
+
+**Added: 2026-02-16**
+**Priority: ABSOLUTE - No exceptions**
+
+### Golden Rules
+```
+❌ NEVER commit: API keys, tokens, passwords, private keys
+❌ NEVER commit: Environment variables (.env files)
+❌ NEVER commit: Supabase keys, database credentials
+❌ NEVER commit: GitHub PATs
+
+✅ ONLY in: .env (local), CI/CD secrets (GitHub/Render)
+✅ ONLY in: Environment variables on deployment platform
+```
+
+### Before Every Commit
+1. Check `git diff --cached` for secrets
+2. Run `git log --all --oneline --grep="pat\|token\|key\|secret"`
+3. Verify no .env files staged
+4. Use pre-commit hook to catch secrets
+
+### If Leaked
+1. IMMEDIATELY revoke the token/secret
+2. Rotate all related credentials
+3. Audit access logs
+4. Document incident
+
+---
+
 ## CRITICAL RULE: Post-Push Build Verification
 
 **Added: 2026-02-16**
@@ -76,3 +108,4 @@
 - ✅ Set issues to "in progress" before working
 - ✅ Write unit tests for all new features
 - ✅ Monitor production on every heartbeat
+- ✅ **NEVER commit secrets**
