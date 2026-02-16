@@ -26,6 +26,7 @@ try
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddHttpContextAccessor();
 
     // Configure SQLite database
     builder.Services.AddDbContext<FleetFuelDbContext>(options =>
@@ -72,6 +73,9 @@ try
     app.UseSerilogRequestLogging();
     app.UseCors("AllowFrontend");
     
+    // Serve uploaded files
+    app.UseStaticFiles();
+
     // Supabase JWT token validation (TASK-16)
     app.UseSupabaseJwtValidation();
     

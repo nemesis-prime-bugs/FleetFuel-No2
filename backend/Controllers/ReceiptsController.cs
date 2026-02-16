@@ -90,6 +90,75 @@ public class ReceiptsController : ControllerBase
     }
 
     /// <summary>
+    /// POST /api/v1/receipts/{id}/upload
+    /// Upload a receipt image for an existing receipt.
+    /// </summary>
+    [HttpPost("{id:guid}/upload")]
+    public async Task<IActionResult> UploadImage(Guid id, IFormFile file)
+    {
+        var userId = GetUserId();
+        if (userId == null) return Unauthorized();
+
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest(new { error = "No file uploaded" });
+        }
+
+        // Validate file type
+        var allowedTypes = new[] { "image/jpeg", "image/png", "image/webp", "application/pdf" };
+        if (!allowedTypes.Contains(file.ContentType))
+        {
+            return BadRequest(new { error = "Invalid file type. Allowed: JPEG, PNG, WebP, PDF" });
+        }
+
+        // Validate file size (max 5MB)
+        if (file.Length > 5 * 1024 * 1024)
+        {
+            return BadRequest(new { error = "File size must be less than 5MB" });
+        }
+
+        try
+        {
+            var environment = HttpContext.RequestServices.GetService<IWebHostEnvironment>();
+            var uploadsPath = Path.Combine(environment?.ContentRootPath ?? "uploads", "receipts");
+            
+            // Ensure uploads directory exists
+            Directory.CreateDirectory(uploadsPath);
+
+            // Generate unique filename
+            var extension = Path.GetExtension(file.FileName);
+            var filename = $"{id}_{Guid.NewGuid():N}{extension}";
+            var filePath = Path.Combine(uploadsPath, filename);
+
+            // Save file
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // Update receipt with image path (relative path)
+            var relativePath = $"/uploads/receipts/{filename}";
+            var receipt = await _service.UpdateImagePathAsync(id, relativePath, userId.Value);
+
+            if (receipt == null)
+            {
+                // Clean up file if receipt not found
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+                return NotFound(new { error = "Receipt not found" });
+            }
+
+            return Ok(new { imagePath = relativePath, filename });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Failed to upload file", details = ex.Message });
+        }
+    }
+
+    /// <summary>
     /// PUT /api/v1/receipts/{id}
     /// </summary>
     [HttpPut("{id:guid}")]

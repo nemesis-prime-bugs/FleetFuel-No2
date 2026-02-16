@@ -48,10 +48,12 @@ public class SortParams
 }
 
 /// <summary>
-/// Combined query parameters.
+/// Combined query parameters with pagination and sorting.
 /// </summary>
-public class QueryParams : PaginationParams, SortParams
+public class QueryParams : PaginationParams
 {
+    public string? SortBy { get; set; }
+    public bool Descending { get; set; }
     public string? Search { get; set; }
 }
 
@@ -87,7 +89,7 @@ public class ApiResponse<T>
     public PaginationMetadata? Pagination { get; set; }
 
     public static ApiResponse<T> Ok(T data) => new() { Success = true, Data = data };
-    public static ApiResponse<T> Error(string message) => new() { Success = false, Error = message };
+    public static ApiResponse<T> Fail(string message) => new() { Success = false, Error = message };
     public static ApiResponse<T> Ok(T data, PaginationMetadata pagination) =>
         new() { Success = true, Data = data, Pagination = pagination };
 }

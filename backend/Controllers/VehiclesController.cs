@@ -1,5 +1,6 @@
 using FleetFuel.Api.Models;
 using FleetFuel.Api.Services;
+using FleetFuel.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FleetFuel.Api.Controllers;

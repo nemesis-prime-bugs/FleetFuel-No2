@@ -20,10 +20,8 @@ public static class LoggingConfiguration
             .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
             .MinimumLevel.Override("System", LogEventLevel.Warning)
             .Enrich.FromLogContext()
-            .Enrich.WithEnvironment(environment)
-            .Enrich.WithMachineName()
+            .Enrich.WithProperty("Environment", environment)
             .Enrich.WithExceptionDetails()
-            .Destructure.JsonNetTypes()
             .WriteTo.Console(
                 outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}",
                 theme: isDevelopment ? AnsiConsoleTheme.Code : AnsiConsoleTheme.Literate

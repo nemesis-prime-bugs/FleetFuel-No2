@@ -102,8 +102,8 @@ public class RateLimitingMiddleware
 
 public class RateLimitBucket
 {
-    public int RemainingRequests { get; set; }
-    public DateTime ResetTime { get; set; }
+    public int RemainingRequests;
+    public DateTime ResetTime;
 }
 
 public class RateLimitOptions

@@ -13,6 +13,7 @@ public interface IReceiptService
     Task<Receipt?> GetByIdAsync(Guid id, Guid userId);
     Task<Receipt> CreateAsync(CreateReceiptRequest request, Guid userId, string? imagePath = null);
     Task<Receipt?> UpdateAsync(Guid id, UpdateReceiptRequest request, Guid userId);
+    Task<Receipt?> UpdateImagePathAsync(Guid id, string imagePath, Guid userId);
     Task<bool> DeleteAsync(Guid id, Guid userId);
 }
 
@@ -135,5 +136,17 @@ public class ReceiptService : IReceiptService
 
         await _repository.DeleteAsync(id, userId);
         return true;
+    }
+
+    public async Task<Receipt?> UpdateImagePathAsync(Guid id, string imagePath, Guid userId)
+    {
+        var receipt = await _repository.GetByIdAsync(id, userId);
+        if (receipt == null)
+        {
+            return null;
+        }
+
+        receipt.ImagePath = imagePath;
+        return await _repository.UpdateAsync(receipt);
     }
 }

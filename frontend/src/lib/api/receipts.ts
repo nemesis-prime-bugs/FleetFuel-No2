@@ -138,3 +138,27 @@ export async function deleteReceipt(id: string): Promise<void> {
     throw new Error('Failed to delete receipt');
   }
 }
+
+export async function uploadReceiptImage(receiptId: string, file: File): Promise<{ imagePath: string }> {
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  if (!session) throw new Error('Not authenticated');
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${API_URL}/api/v1/receipts/${receiptId}/upload`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${session.access_token}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || 'Failed to upload image');
+  }
+
+  return response.json();
+}
