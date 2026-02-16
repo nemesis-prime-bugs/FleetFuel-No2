@@ -19,6 +19,7 @@ public class FleetFuelDbContext : DbContext
     public DbSet<Trip> Trips { get; set; } = null!;
     public DbSet<Receipt> Receipts { get; set; } = null!;
     public DbSet<YearSummary> YearSummaries { get; set; } = null!;
+    public DbSet<AuditLog> AuditLogs { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
