@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: fleetfuel-api
+    repo: nemesis-prime-bugs/FleetFuel-No2
+    branch: main
+    rootDir: backend
+    env: dotnet
+    envVars:
+      - key: SUPABASE_URL
+        value: https://brbvzgpemmpytwofcrpu.supabase.co
+      - key: SUPABASE_KEY
+        value: b2fe1574-4285-4ed1-80e0-93b9716418ce
+      - key: FRONTEND_URL
+        value: https://frontend-iota-lac-88.vercel.app
+    buildCommand: dotnet publish -c Release -o out
+    startCommand: dotnet out/FleetFuel.Api.dll
