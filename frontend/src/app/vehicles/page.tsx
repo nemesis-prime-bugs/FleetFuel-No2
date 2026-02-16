@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { getVehicles, deleteVehicle, type Vehicle } from '@/lib/api/vehicles';
 import { useToast } from '@/components/ui/Toast';
+import { NoVehiclesEmptyState } from '@/components/ui/EmptyState';
 import { OnboardingGuide } from '@/components/OnboardingGuide';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -99,17 +100,7 @@ export default function VehiclesPage() {
           <OnboardingGuide />
 
           {vehicles.length === 0 ? (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <p className="text-muted-foreground mb-4">No vehicles yet</p>
-                <Link href="/vehicles/new">
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Your First Vehicle
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+            <NoVehiclesEmptyState />
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {vehicles.map(vehicle => (

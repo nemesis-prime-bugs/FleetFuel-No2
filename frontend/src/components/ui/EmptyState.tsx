@@ -1,5 +1,8 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Plus } from 'lucide-react';
 
 interface EmptyStateProps {
   icon?: ReactNode;
@@ -14,36 +17,36 @@ interface EmptyStateProps {
 
 export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      {icon && (
-        <div className="mb-4 text-gray-400">
-          {icon}
-        </div>
-      )}
-      <h3 className="text-lg font-medium text-gray-900 mb-2">
-        {title}
-      </h3>
-      <p className="text-sm text-gray-500 mb-6 max-w-sm">
-        {description}
-      </p>
-      {action && (
-        action.href ? (
-          <Link
-            href={action.href}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-          >
-            {action.label}
-          </Link>
-        ) : (
-          <button
-            onClick={action.onClick}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-          >
-            {action.label}
-          </button>
-        )
-      )}
-    </div>
+    <Card className="border-dashed">
+      <CardContent className="flex flex-col items-center justify-center py-12 px-4 text-center">
+        {icon && (
+          <div className="mb-4 text-muted-foreground">
+            {icon}
+          </div>
+        )}
+        <h3 className="text-lg font-semibold mb-2">
+          {title}
+        </h3>
+        <p className="text-sm text-muted-foreground mb-6 max-w-sm">
+          {description}
+        </p>
+        {action && (
+          action.href ? (
+            <Link href={action.href}>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                {action.label}
+              </Button>
+            </Link>
+          ) : (
+            <Button onClick={action.onClick}>
+              <Plus className="h-4 w-4 mr-2" />
+              {action.label}
+            </Button>
+          )
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -53,7 +56,7 @@ export function NoVehiclesEmptyState() {
     <EmptyState
       title="No vehicles yet"
       description="Add your first vehicle to start tracking trips and fuel expenses."
-      action={{ label: '+ Add Vehicle', href: '/vehicles/new' }}
+      action={{ label: 'Add Vehicle', href: '/vehicles/new' }}
     />
   );
 }
@@ -63,7 +66,7 @@ export function NoTripsEmptyState() {
     <EmptyState
       title="No trips yet"
       description="Log your first trip to begin tracking your vehicle usage."
-      action={{ label: '+ Log Trip', href: '/trips/new' }}
+      action={{ label: 'Log Trip', href: '/trips/new' }}
     />
   );
 }
@@ -73,7 +76,7 @@ export function NoReceiptsEmptyState() {
     <EmptyState
       title="No receipts yet"
       description="Upload your first fuel receipt to begin tracking expenses."
-      action={{ label: '+ Upload Receipt', href: '/receipts/upload' }}
+      action={{ label: 'Upload Receipt', href: '/receipts/new' }}
     />
   );
 }

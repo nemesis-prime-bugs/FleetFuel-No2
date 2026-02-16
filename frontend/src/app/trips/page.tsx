@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { OnboardingGuide } from '@/components/OnboardingGuide';
+import { NoTripsEmptyState } from '@/components/ui/EmptyState';
 import { getTrips, type Trip } from '@/lib/api/trips';
 import { useToast } from '@/components/ui/Toast';
 import { Button } from '@/components/ui/button';
@@ -59,17 +60,7 @@ export default function TripsPage() {
         <OnboardingGuide />
 
         {trips.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <p className="text-muted-foreground mb-4">No trips yet</p>
-              <Link href="/trips/new">
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Log Your First Trip
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+          <NoTripsEmptyState />
         ) : (
           <Card>
             <CardHeader>
