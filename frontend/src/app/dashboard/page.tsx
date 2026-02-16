@@ -8,6 +8,9 @@ import { getTrips, type Trip } from '@/lib/api/trips';
 import { getReceipts, type Receipt } from '@/lib/api/receipts';
 import { getVehicles, type Vehicle } from '@/lib/api/vehicles';
 import { useToast } from '@/components/ui/Toast';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Plus } from 'lucide-react';
 
 interface DashboardStats {
   totalTrips: number;
@@ -92,12 +95,13 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">{user.email}</span>
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => signOut()}
-                className="text-sm text-red-600 hover:text-red-500"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
               >
                 Sign out
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -107,112 +111,140 @@ export default function DashboardPage() {
         <div className="px-4 py-6 sm:px-0">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
-            <Link
-              href="/trips/new"
-              className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700"
-            >
-              + Log Trip
+            <Link href="/trips/new">
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Log Trip
+              </Button>
             </Link>
           </div>
 
           {/* KPI Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-lg shadow p-6">
-              <p className="text-sm font-medium text-gray-500">Total Vehicles</p>
-              <p className="mt-2 text-3xl font-bold text-gray-900">{stats.totalVehicles}</p>
-            </div>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Total Vehicles
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">{stats.totalVehicles}</p>
+              </CardContent>
+            </Card>
             
-            <div className="bg-white rounded-lg shadow p-6">
-              <p className="text-sm font-medium text-gray-500">Total Trips</p>
-              <p className="mt-2 text-3xl font-bold text-gray-900">{stats.totalTrips}</p>
-            </div>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Total Trips
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">{stats.totalTrips}</p>
+              </CardContent>
+            </Card>
             
-            <div className="bg-white rounded-lg shadow p-6">
-              <p className="text-sm font-medium text-gray-500">Total Distance</p>
-              <p className="mt-2 text-3xl font-bold text-gray-900">{stats.totalDistance.toLocaleString()} km</p>
-            </div>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Total Distance
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">{stats.totalDistance.toLocaleString()} km</p>
+              </CardContent>
+            </Card>
             
-            <div className="bg-white rounded-lg shadow p-6">
-              <p className="text-sm font-medium text-gray-500">Total Expenses</p>
-              <p className="mt-2 text-3xl font-bold text-gray-900">€ {stats.totalExpenses.toFixed(2)}</p>
-            </div>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  Total Expenses
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-bold">€ {stats.totalExpenses.toFixed(2)}</p>
+              </CardContent>
+            </Card>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Recent Trips */}
-            <div className="lg:col-span-2 bg-white rounded-lg shadow overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">Recent Trips</h3>
-              </div>
-              {recentTrips.length === 0 ? (
-                <div className="p-6 text-center text-gray-500">
-                  No trips recorded yet
-                </div>
-              ) : (
-                <div className="divide-y divide-gray-200">
-                  {recentTrips.map((trip) => (
-                    <div key={trip.id} className="px-6 py-4 flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {trip.vehicle?.name || 'Unknown Vehicle'}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {trip.date} • {trip.purpose || 'No purpose'}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium text-gray-900">
-                          {(trip.end_km - trip.start_km).toLocaleString()} km
-                        </p>
-                        <span
-                          className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${
-                            trip.is_business
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
-                        >
-                          {trip.is_business ? 'Business' : 'Private'}
-                        </span>
-                      </div>
+            <div className="lg:col-span-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recent Trips</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {recentTrips.length === 0 ? (
+                    <div className="text-center text-muted-foreground py-8">
+                      No trips recorded yet
                     </div>
-                  ))}
-                </div>
-              )}
-              <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                <Link href="/trips" className="text-sm font-medium text-blue-600 hover:text-blue-500">
-                  View all trips →
-                </Link>
-              </div>
+                  ) : (
+                    <div className="divide-y">
+                      {recentTrips.map((trip) => (
+                        <div key={trip.id} className="py-4 flex items-center justify-between">
+                          <div>
+                            <p className="font-medium">
+                              {trip.vehicle?.name || 'Unknown Vehicle'}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              {trip.date} • {trip.purpose || 'No purpose'}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-medium">
+                              {(trip.end_km - trip.start_km).toLocaleString()} km
+                            </p>
+                            <span
+                              className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded-full ${
+                                trip.is_business
+                                  ? 'bg-green-100 text-green-800'
+                                  : 'bg-gray-100 text-gray-800'
+                              }`}
+                            >
+                              {trip.is_business ? 'Business' : 'Private'}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">Quick Actions</h3>
-              </div>
-              <div className="p-6 space-y-4">
-                <Link
-                  href="/vehicles/new"
-                  className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <p className="text-sm font-medium text-gray-900">Add Vehicle</p>
-                  <p className="text-sm text-gray-500">Register a new vehicle</p>
-                </Link>
-                <Link
-                  href="/trips/new"
-                  className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <p className="text-sm font-medium text-gray-900">Log Trip</p>
-                  <p className="text-sm text-gray-500">Record a new trip</p>
-                </Link>
-                <Link
-                  href="/receipts/new"
-                  className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <p className="text-sm font-medium text-gray-900">Upload Receipt</p>
-                  <p className="text-sm text-gray-500">Add fuel receipt</p>
-                </Link>
-              </div>
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Link href="/vehicles/new" className="block">
+                    <Button variant="outline" className="w-full justify-start">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Vehicle
+                    </Button>
+                  </Link>
+                  <Link href="/trips/new" className="block">
+                    <Button variant="outline" className="w-full justify-start">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Log Trip
+                    </Button>
+                  </Link>
+                  <Link href="/receipts/new" className="block">
+                    <Button variant="outline" className="w-full justify-start">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Upload Receipt
+                    </Button>
+                  </Link>
+                  <Link href="/summary" className="block">
+                    <Button variant="outline" className="w-full justify-start">
+                      <Plus className="h-4 w-4 mr-2" />
+                      View Summary
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
