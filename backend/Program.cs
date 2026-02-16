@@ -61,6 +61,7 @@ try
     builder.Services.AddScoped<IAuditLogService, AuditLogService>();
     builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
     builder.Services.AddScoped<IBackupService, BackupService>();
+    builder.Services.AddScoped<IMonitoringService, MonitoringService>();
 
     // Add Supabase JWT authentication (TASK-16)
     // builder.Services.AddAuthentication(...).AddJwtBearer(...);
