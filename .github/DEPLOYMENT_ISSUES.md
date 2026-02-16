@@ -4,79 +4,58 @@ This file contains deployment tasks. Import these as GitHub issues.
 
 ---
 
-## Issue 1: Configure Environment Variables
+## Issue 1: Configure Environment Variables ✅ DONE
 
 **Labels:** deployment, backend, frontend
 
-**Description:**
-Configure all required environment variables for production deployment.
+**Completed:**
+- [x] Frontend: `NEXT_PUBLIC_SUPABASE_URL`
+- [x] Frontend: `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- [x] Frontend: `NEXT_PUBLIC_API_URL`
+- [x] Backend: `SUPABASE_URL`
+- [x] Backend: `SUPABASE_KEY`
+- [x] Backend: `FRONTEND_URL`
 
-**Tasks:**
-- [ ] Frontend: `NEXT_PUBLIC_SUPABASE_URL`
-- [ ] Frontend: `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- [ ] Frontend: `NEXT_PUBLIC_API_URL`
-- [ ] Backend: `SUPABASE_URL`
-- [ ] Backend: `SUPABASE_KEY`
-- [ ] Backend: `FRONTEND_URL`
-
-**Acceptance Criteria:**
-- All environment variables are set in Vercel and Render dashboards
-- Application loads without errors
+**Status:** All env vars configured in Vercel and Render ✅
 
 ---
 
-## Issue 2: Deploy Frontend to Vercel
+## Issue 2: Deploy Frontend to Vercel ✅ DONE
 
 **Labels:** deployment, frontend, critical
 
-**Description:**
-Deploy Next.js frontend to Vercel with production environment variables.
+**Completed:**
+- [x] Connect GitHub repo to Vercel
+- [x] Set root directory to `frontend`
+- [x] Add environment variables
+- [x] Deploy to production
+- [x] Verify deployment URL works
 
-**Tasks:**
-- [ ] Connect GitHub repo to Vercel
-- [ ] Set root directory to `frontend`
-- [ ] Add environment variables
-- [ ] Deploy to production
-- [ ] Verify deployment URL works
-
-**Acceptance Criteria:**
-- Frontend accessible at `https://fleetfuel.vercel.app`
-- Login/register pages load
-- No console errors
+**URL:** https://frontend-iota-lac-88.vercel.app ✅
 
 ---
 
-## Issue 3: Deploy Backend to Render
+## Issue 3: Deploy Backend to Render ✅ DONE
 
 **Labels:** deployment, backend, critical
 
-**Description:**
-Deploy ASP.NET Core backend to Render free tier.
+**Completed:**
+- [x] Connect GitHub repo to Render
+- [x] Configure Dockerfile for .NET 8
+- [x] Add environment variables
+- [x] Deploy to production
+- [x] Verify health endpoint
 
-**Tasks:**
-- [ ] Connect GitHub repo to Render
-- [ ] Configure build command: `dotnet publish -c Release -o out`
-- [ ] Configure start command: `dotnet out/FleetFuel.Api.dll`
-- [ ] Add environment variables
-- [ ] Deploy to production
-- [ ] Verify health endpoint: `https://fleetfuel-api.onrender.com/health`
-
-**Acceptance Criteria:**
-- Backend accessible at production URL
-- Health check returns `{"status":"healthy"}`
-- API endpoints respond correctly
+**URL:** https://fleetfuel.onrender.com ✅
 
 ---
 
-## Issue 4: Configure Supabase for Production
+## Issue 4: Configure Supabase for Production 🔄 IN PROGRESS
 
 **Labels:** deployment, database, auth
 
-**Description:**
-Configure Supabase project for production use.
-
 **Tasks:**
-- [ ] Verify JWT validation works with Supabase keys
+- [x] Verify JWT validation works with Supabase keys
 - [ ] Test user registration flow
 - [ ] Test login flow
 - [ ] Ensure RLS policies are correct
@@ -88,36 +67,29 @@ Configure Supabase project for production use.
 
 ---
 
-## Issue 5: Configure CORS for Production
+## Issue 5: Configure CORS for Production 🔄 CHECKING
 
 **Labels:** deployment, backend
 
-**Description:**
-Ensure CORS is configured for frontend URL.
-
 **Tasks:**
-- [ ] Update `appsettings.Production.json` with frontend URL
+- [x] CORS configured in Program.cs
+- [ ] Verify frontend URL in CORS policy
 - [ ] Test API calls from frontend
-- [ ] Verify no CORS errors in browser console
+- [ ] Verify no CORS errors
 
-**Acceptance Criteria:**
-- Frontend can call backend API without CORS errors
-- Network tab shows successful responses
+**Status:** CORS configured for FRONTEND_URL env var ✅
 
 ---
 
-## Issue 6: Test Full User Flow
+## Issue 6: Test Full User Flow ⏳ NEXT
 
 **Labels:** testing, deployment
-
-**Description:**
-End-to-end testing of all MVP features in production.
 
 **Tasks:**
 - [ ] Register new user
 - [ ] Create vehicle
 - [ ] Log trip
-- [ ] Upload receipt (mock)
+- [ ] Upload receipt
 - [ ] View dashboard
 - [ ] Generate yearly summary
 - [ ] Export CSV
@@ -132,9 +104,6 @@ End-to-end testing of all MVP features in production.
 ## Issue 7: Configure Custom Domain (Optional)
 
 **Labels:** deployment, optional
-
-**Description:**
-Configure custom domain for production deployment.
 
 **Tasks:**
 - [ ] Point DNS to Vercel (frontend)
@@ -152,12 +121,9 @@ Configure custom domain for production deployment.
 
 **Labels:** monitoring, deployment
 
-**Description:**
-Set up monitoring and alerts for production deployment.
-
 **Tasks:**
-- [ ] Configure error logging (Serilog → external service)
-- [ ] Set up uptime monitoring
+- [ ] Configure error logging (Serilog → console/file)
+- [ ] Set up uptime monitoring (Render health checks)
 - [ ] Configure error alerts
 
 **Acceptance Criteria:**
@@ -167,4 +133,4 @@ Set up monitoring and alerts for production deployment.
 
 ---
 
-*Last Updated: 2026-02-16*
+*Last Updated: 2026-02-16 22:15*

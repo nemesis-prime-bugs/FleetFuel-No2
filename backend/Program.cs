@@ -37,13 +37,13 @@ try
     {
         options.AddPolicy("AllowFrontend", policy =>
         {
-            policy.WithOrigins(
-                builder.Configuration["Frontend:Url"] ?? "http://localhost:3000",
-                "http://localhost:3000"
-            )
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+            var frontendUrl = builder.Configuration["FRONTEND_URL"] 
+                ?? builder.Configuration["Frontend:Url"] 
+                ?? "http://localhost:3000";
+            policy.WithOrigins(frontendUrl)
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
         });
     });
 
