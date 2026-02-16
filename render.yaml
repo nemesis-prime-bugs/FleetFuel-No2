@@ -1,10 +1,11 @@
 services:
   - type: web
     name: fleetfuel-api
-    repo: nemesis-prime-bugs/FleetFuel-No2
+    repoOwner: nemesis-prime-bugs
+    repoName: FleetFuel-No2
     branch: main
     rootDir: backend
-    env: dotnet
+    runtime: dotnet8
     envVars:
       - key: SUPABASE_URL
         value: https://brbvzgpemmpytwofcrpu.supabase.co
