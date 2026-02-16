@@ -10,6 +10,13 @@ import { useToast } from '@/components/ui/Toast';
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { getVehicles, type Vehicle } from '@/lib/api/vehicles';
 import { createTrip } from '@/lib/api/trips';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ChevronLeft, Car } from 'lucide-react';
 
 const tripSchema = z.object({
   vehicle_id: z.string().min(1, 'Vehicle is required'),
@@ -31,13 +38,9 @@ export default function NewTripPage() {
   const { markTripAdded } = useOnboarding();
   const [loading, setLoading] = useState(false);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [distance, setDistance] = useState<number | null>(null);
 
   const formRef = useRef<HTMLFormElement>(null);
-  const vehicleSelectRef = useRef<HTMLSelectElement>(null);
-  const dateInputRef = useRef<HTMLInputElement>(null);
-  const startKmInputRef = useRef<HTMLInputElement>(null);
-  const endKmInputRef = useRef<HTMLInputElement>(null);
-  const purposeInputRef = useRef<HTMLTextAreaElement>(null);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const { register, handleSubmit, watch, setValue, formState: { errors, isValid } } = useForm<TripForm>({
@@ -92,9 +95,18 @@ export default function NewTripPage() {
     }
   }, [watchEndKm, watchVehicleId]);
 
+  // Calculate distance
+  useEffect(() => {
+    if (watchStartKm !== undefined && watchEndKm !== undefined && watchEndKm > watchStartKm) {
+      setDistance(watchEndKm - watchStartKm);
+    } else {
+      setDistance(null);
+    }
+  }, [watchStartKm, watchEndKm]);
+
   // Persist business preference
-  const handleBusinessChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    localStorage.setItem('last_is_business', e.target.checked.toString());
+  const handleBusinessChange = (checked: boolean) => {
+    localStorage.setItem('last_is_business', checked.toString());
   };
 
   // Keyboard navigation
@@ -105,18 +117,9 @@ export default function NewTripPage() {
 
         const target = e.target as HTMLElement;
 
-        if (target === vehicleSelectRef.current) {
-          dateInputRef.current?.focus();
-        } else if (target === dateInputRef.current) {
-          startKmInputRef.current?.focus();
-        } else if (target === startKmInputRef.current) {
-          endKmInputRef.current?.focus();
-        } else if (target === endKmInputRef.current) {
-          purposeInputRef.current?.focus();
-        } else if (target === purposeInputRef.current) {
-          submitButtonRef.current?.focus();
-        } else if (target === submitButtonRef.current && isValid) {
-          // Submit form
+        if (submitButtonRef.current && isValid) {
+          submitButtonRef.current.focus();
+        } else if (submitButtonRef.current && isValid) {
           formRef.current?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
         }
       }
@@ -150,158 +153,131 @@ export default function NewTripPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-md mx-auto px-4">
-        <div className="mb-8">
-          <Link href="/trips" className="text-blue-600 hover:text-blue-500 text-sm">
-            ← Back to trips
-          </Link>
-          <h1 className="mt-4 text-2xl font-bold text-gray-900">Log Trip</h1>
-        </div>
-
-        <form
-          ref={formRef}
-          onSubmit={handleSubmit(onSubmit)}
-          className="bg-white shadow rounded-lg p-6 space-y-5"
+        <Link
+          href="/trips"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6"
         >
-          <div>
-            <label htmlFor="vehicle_id" className="block text-sm font-medium text-gray-700">
-              Vehicle *
-            </label>
-            <select
-              {...register('vehicle_id')}
-              ref={(e) => {
-                register('vehicle_id').ref(e);
-                vehicleSelectRef.current = e;
-              }}
-              id="vehicle_id"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              autoFocus
-            >
-              <option value="">Select a vehicle</option>
-              {vehicles.map((vehicle) => (
-                <option key={vehicle.id} value={vehicle.id}>
-                  {vehicle.name} ({vehicle.license_plate})
-                </option>
-              ))}
-            </select>
-            {errors.vehicle_id && (
-              <p className="mt-1 text-sm text-red-600">{errors.vehicle_id.message}</p>
-            )}
-          </div>
+          <ChevronLeft className="h-4 w-4 mr-1" />
+          Back to trips
+        </Link>
 
-          <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700">
-              Date *
-            </label>
-            <input
-              {...register('date')}
-              ref={(e) => {
-                register('date').ref(e);
-                dateInputRef.current = e;
-              }}
-              id="date"
-              type="date"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-            />
-            {errors.date && (
-              <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
-            )}
-          </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Log Trip</CardTitle>
+            <CardDescription>
+              Record a vehicle trip for tracking
+            </CardDescription>
+          </CardHeader>
+          <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="vehicle_id">Vehicle *</Label>
+                <Select
+                  onValueChange={(value) => setValue('vehicle_id', value)}
+                  defaultValue={watchVehicleId}
+                >
+                  <SelectTrigger autoFocus>
+                    <SelectValue placeholder="Select a vehicle" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {vehicles.map((vehicle) => (
+                      <SelectItem key={vehicle.id} value={vehicle.id}>
+                        {vehicle.name} ({vehicle.license_plate})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.vehicle_id && (
+                  <p className="text-sm text-red-600">{errors.vehicle_id.message}</p>
+                )}
+              </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="start_km" className="block text-sm font-medium text-gray-700">
-                Start KM *
-              </label>
-              <input
-                {...register('start_km', { valueAsNumber: true })}
-                ref={(e) => {
-                  register('start_km').ref(e);
-                  startKmInputRef.current = e;
-                }}
-                id="start_km"
-                type="number"
-                min="0"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              />
-              {errors.start_km && (
-                <p className="mt-1 text-sm text-red-600">{errors.start_km.message}</p>
+              <div className="space-y-2">
+                <Label htmlFor="date">Date *</Label>
+                <Input
+                  id="date"
+                  type="date"
+                  {...register('date')}
+                />
+                {errors.date && (
+                  <p className="text-sm text-red-600">{errors.date.message}</p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="start_km">Start KM *</Label>
+                  <Input
+                    id="start_km"
+                    type="number"
+                    min="0"
+                    {...register('start_km', { valueAsNumber: true })}
+                  />
+                  {errors.start_km && (
+                    <p className="text-sm text-red-600">{errors.start_km.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="end_km">End KM *</Label>
+                  <Input
+                    id="end_km"
+                    type="number"
+                    min="0"
+                    {...register('end_km', { valueAsNumber: true })}
+                  />
+                  {errors.end_km && (
+                    <p className="text-sm text-red-600">{errors.end_km.message}</p>
+                  )}
+                </div>
+              </div>
+
+              {distance !== null && (
+                <div className="bg-muted rounded-md p-3 text-center">
+                  <p className="text-sm text-muted-foreground">Distance</p>
+                  <p className="text-2xl font-bold">{distance.toLocaleString()} km</p>
+                </div>
               )}
-            </div>
 
-            <div>
-              <label htmlFor="end_km" className="block text-sm font-medium text-gray-700">
-                End KM *
-              </label>
-              <input
-                {...register('end_km', { valueAsNumber: true })}
-                ref={(e) => {
-                  register('end_km').ref(e);
-                  endKmInputRef.current = e;
-                }}
-                id="end_km"
-                type="number"
-                min="0"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              />
-              {errors.end_km && (
-                <p className="mt-1 text-sm text-red-600">{errors.end_km.message}</p>
-              )}
-            </div>
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="purpose">Purpose (optional)</Label>
+                <textarea
+                  {...register('purpose')}
+                  id="purpose"
+                  rows={2}
+                  placeholder="Client meeting, delivery, etc."
+                  className="flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+                />
+              </div>
 
-          {watchEndKm !== undefined && watchStartKm !== undefined && watchEndKm > watchStartKm && (
-            <p className="text-sm text-gray-600">
-              Distance: <span className="font-medium">{(watchEndKm - watchStartKm).toLocaleString()} km</span>
-            </p>
-          )}
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="is_business"
+                  defaultChecked
+                  onCheckedChange={(checked) => handleBusinessChange(checked as boolean)}
+                />
+                <Label htmlFor="is_business" className="text-sm font-normal">
+                  Business trip
+                </Label>
+              </div>
 
-          <div>
-            <label htmlFor="purpose" className="block text-sm font-medium text-gray-700">
-              Purpose (optional)
-            </label>
-            <textarea
-              {...register('purpose')}
-              ref={(e) => {
-                register('purpose').ref(e);
-                purposeInputRef.current = e;
-              }}
-              id="purpose"
-              rows={2}
-              placeholder="Client meeting, delivery, etc."
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2.5 focus:border-blue-500 focus:ring-blue-500 sm:text-sm resize-none"
-            />
-          </div>
-
-          <div className="flex items-center">
-            <input
-              {...register('is_business')}
-              id="is_business"
-              type="checkbox"
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              onChange={handleBusinessChange}
-            />
-            <label htmlFor="is_business" className="ml-2 block text-sm text-gray-700">
-              Business trip
-            </label>
-          </div>
-
-          <div className="flex justify-end space-x-4 pt-2">
-            <Link
-              href="/trips"
-              className="px-4 py-2.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              Cancel
-            </Link>
-            <button
-              type="submit"
-              ref={submitButtonRef}
-              disabled={loading || !isValid}
-              className="px-4 py-2.5 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Logging...' : 'Log Trip'}
-            </button>
-          </div>
-        </form>
+              <div className="flex justify-end space-x-4 pt-4">
+                <Link href="/trips">
+                  <Button variant="outline" type="button">
+                    Cancel
+                  </Button>
+                </Link>
+                <Button
+                  type="submit"
+                  ref={submitButtonRef}
+                  disabled={loading || !isValid}
+                >
+                  {loading ? 'Logging...' : 'Log Trip'}
+                </Button>
+              </div>
+            </CardContent>
+          </form>
+        </Card>
       </div>
     </div>
   );
