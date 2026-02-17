@@ -19,17 +19,29 @@ public interface IVehicleService
 /// <summary>
 /// Request DTOs.
 /// </summary>
-public record CreateVehicleRequest(
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("license_plate")] string LicensePlate,
-    [property: JsonPropertyName("initial_mileage")] int InitialMileage
-);
+public class CreateVehicleRequest
+{
+    [JsonPropertyName("name")]
+    public string Name { get; set; } = string.Empty;
+    
+    [JsonPropertyName("license_plate")]
+    public string LicensePlate { get; set; } = string.Empty;
+    
+    [JsonPropertyName("initial_mileage")]
+    public int InitialMileage { get; set; }
+}
 
-public record UpdateVehicleRequest(
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("license_plate")] string LicensePlate,
-    [property: JsonPropertyName("initial_mileage")] int InitialMileage
-);
+public class UpdateVehicleRequest
+{
+    [JsonPropertyName("name")]
+    public string Name { get; set; } = string.Empty;
+    
+    [JsonPropertyName("license_plate")]
+    public string LicensePlate { get; set; } = string.Empty;
+    
+    [JsonPropertyName("initial_mileage")]
+    public int InitialMileage { get; set; }
+}
 
 /// <summary>
 /// Service implementation for Vehicle business logic.
