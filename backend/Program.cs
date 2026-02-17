@@ -64,6 +64,7 @@ try
     builder.Services.AddScoped<IMonitoringService, MonitoringService>();
     builder.Services.AddScoped<ISyncService, SyncService>();
     builder.Services.AddScoped<IDeploymentMonitor, DeploymentMonitor>();
+    builder.Services.AddScoped<IUserService, UserService>();
 
     // Add HttpClient for external service calls
     builder.Services.AddHttpClient<IDeploymentMonitor, DeploymentMonitor>();

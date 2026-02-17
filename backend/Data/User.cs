@@ -16,6 +16,19 @@ public class User
     [MaxLength(255)]
     public string Email { get; set; } = string.Empty;
 
+    // Profile fields
+    [MaxLength(100)]
+    public string? DisplayName { get; set; }
+
+    [MaxLength(500)]
+    public string? Bio { get; set; }
+
+    [MaxLength(500)]
+    public string? AvatarUrl { get; set; }
+
+    // Preferences (stored as JSON string)
+    public string? PreferencesJson { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
