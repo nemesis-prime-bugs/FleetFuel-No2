@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using FleetFuel.Data;
 using FleetFuel.Api.Repositories;
 
@@ -18,8 +19,17 @@ public interface IVehicleService
 /// <summary>
 /// Request DTOs.
 /// </summary>
-public record CreateVehicleRequest(string Name, string LicensePlate, int InitialMileage);
-public record UpdateVehicleRequest(string Name, string LicensePlate, int InitialMileage);
+public record CreateVehicleRequest(
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("license_plate")] string LicensePlate,
+    [property: JsonPropertyName("initial_mileage")] int InitialMileage
+);
+
+public record UpdateVehicleRequest(
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("license_plate")] string LicensePlate,
+    [property: JsonPropertyName("initial_mileage")] int InitialMileage
+);
 
 /// <summary>
 /// Service implementation for Vehicle business logic.
