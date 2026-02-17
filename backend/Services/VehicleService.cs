@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using FleetFuel.Data;
 using FleetFuel.Api.Repositories;
 
@@ -17,30 +16,20 @@ public interface IVehicleService
 }
 
 /// <summary>
-/// Request DTOs.
+/// Request DTOs - use lowercase snake_case to match frontend JSON
 /// </summary>
 public class CreateVehicleRequest
 {
-    [JsonPropertyName("name")]
-    public string Name { get; set; } = string.Empty;
-    
-    [JsonPropertyName("license_plate")]
-    public string LicensePlate { get; set; } = string.Empty;
-    
-    [JsonPropertyName("initial_mileage")]
-    public int InitialMileage { get; set; }
+    public string name { get; set; } = string.Empty;
+    public string license_plate { get; set; } = string.Empty;
+    public int initial_mileage { get; set; }
 }
 
 public class UpdateVehicleRequest
 {
-    [JsonPropertyName("name")]
-    public string Name { get; set; } = string.Empty;
-    
-    [JsonPropertyName("license_plate")]
-    public string LicensePlate { get; set; } = string.Empty;
-    
-    [JsonPropertyName("initial_mileage")]
-    public int InitialMileage { get; set; }
+    public string name { get; set; } = string.Empty;
+    public string license_plate { get; set; } = string.Empty;
+    public int initial_mileage { get; set; }
 }
 
 /// <summary>
@@ -70,9 +59,9 @@ public class VehicleService : IVehicleService
         var vehicle = new Vehicle
         {
             UserId = userId,
-            Name = request.Name,
-            LicensePlate = request.LicensePlate.ToUpperInvariant(),
-            InitialMileage = request.InitialMileage
+            Name = request.name,
+            LicensePlate = request.license_plate.ToUpperInvariant(),
+            InitialMileage = request.initial_mileage
         };
 
         return await _repository.CreateAsync(vehicle);
@@ -83,9 +72,9 @@ public class VehicleService : IVehicleService
         var vehicle = await _repository.GetByIdAsync(id, userId);
         if (vehicle == null) return null;
 
-        vehicle.Name = request.Name;
-        vehicle.LicensePlate = request.LicensePlate.ToUpperInvariant();
-        vehicle.InitialMileage = request.InitialMileage;
+        vehicle.Name = request.name;
+        vehicle.LicensePlate = request.license_plate.ToUpperInvariant();
+        vehicle.InitialMileage = request.initial_mileage;
 
         return await _repository.UpdateAsync(vehicle);
     }
