@@ -45,6 +45,7 @@ public class UploadAvatarRequest
 /// </summary>
 public class UserPreferences
 {
+    // Display preferences
     public string Currency { get; set; } = "USD";
     public string DistanceUnit { get; set; } = "km";
     public string VolumeUnit { get; set; } = "L";
@@ -53,6 +54,14 @@ public class UserPreferences
     public string DateFormat { get; set; } = "DD/MM/YYYY";
     public string Theme { get; set; } = "system";
     public string Timezone { get; set; } = "UTC";
+    
+    // Notification preferences
+    public bool ServiceReminders { get; set; } = true;
+    public bool TripReports { get; set; } = false;
+    public bool FuelPriceAlerts { get; set; } = false;
+    public bool ProductUpdates { get; set; } = false;
+    public bool SecurityAlerts { get; set; } = true;
+    public string EmailFrequency { get; set; } = "realtime"; // realtime, daily, weekly, never
 }
 
 /// <summary>
