@@ -23,7 +23,12 @@ try
         .WriteTo.Console());
 
     // Add services to the container
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            // Make JSON deserialization case-insensitive
+            options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+        });
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddHttpContextAccessor();
