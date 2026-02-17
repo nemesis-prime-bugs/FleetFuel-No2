@@ -68,6 +68,7 @@ try
     builder.Services.AddScoped<ISecurityService, SecurityService>();
     builder.Services.AddScoped<IExportService, ExportService>();
     builder.Services.AddScoped<IBillingService, BillingService>();
+    builder.Services.AddScoped<IPrivacyService, PrivacyService>();
 
     // Add HttpClient for external service calls
     builder.Services.AddHttpClient<IDeploymentMonitor, DeploymentMonitor>();
