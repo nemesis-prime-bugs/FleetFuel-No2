@@ -48,7 +48,13 @@ async function getAuthHeaders(): Promise<HeadersInit> {
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) {
-    throw new Error('Please log in to continue');
+    console.warn('No Supabase session found - user may not be logged in');
+    throw new Error('Session not found. Please log in again and retry.');
+  }
+
+  if (!session.access_token) {
+    console.warn('Session exists but no access_token');
+    throw new Error('Authentication token missing. Please log in again.');
   }
 
   return {
@@ -132,14 +138,20 @@ export async function createVehicle(data: CreateVehicleRequest): Promise<Vehicle
     });
 
     if (!response.ok) {
-      throw new Error(getErrorMessage(response));
+      const errorMsg = getErrorMessage(response);
+      console.error('Create vehicle failed:', { status: response.status, error: errorMsg });
+      throw new Error(errorMsg);
     }
 
     const result = await response.json();
+    console.log('Vehicle created successfully:', result.Data);
     return result.Data;
   } catch (error) {
     console.error('Failed to create vehicle:', error);
-    throw error instanceof Error ? error : new Error('Failed to create vehicle');
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to create vehicle. Please check your connection and try again.');
   }
 }
 
