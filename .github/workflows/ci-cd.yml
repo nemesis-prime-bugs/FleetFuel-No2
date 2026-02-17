@@ -27,14 +27,6 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Cache NuGet packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: nuget-${{ runner.os }}-${{ hashFiles('backend/**/*.csproj') }}
-          restore-keys: |
-            nuget-${{ runner.os }}-
-
       - name: Restore dependencies
         run: dotnet restore
 
@@ -59,16 +51,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-
-      - name: Get cache key
-        id: cache-key
-        run: echo "hash=${{ hashFiles('frontend/package-lock.json') }}" >> $GITHUB_OUTPUT
-
-      - name: Cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: frontend/node_modules
-          key: node-modules-${{ runner.os }}-${{ steps.cache-key.outputs.hash }}
 
       - name: Install dependencies
         run: npm ci
