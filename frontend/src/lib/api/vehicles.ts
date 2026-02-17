@@ -23,101 +23,158 @@ export interface UpdateVehicleRequest {
   initial_mileage: number;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+// Use production API URL, fallback to localhost for development
+const getApiUrl = () => {
+  if (typeof window !== 'undefined') {
+    // In browser, use production URL or current origin for API calls
+    const prodUrl = 'https://fleetfuel.onrender.com';
+    const envUrl = process.env.NEXT_PUBLIC_API_URL;
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    // If we're on localhost and no env URL, use localhost
+    if (isLocalhost && (!envUrl || envUrl.includes('localhost'))) {
+      return envUrl || 'http://localhost:5000';
+    }
+    
+    // Otherwise use the production URL or the env URL
+    return envUrl || prodUrl;
+  }
+  return 'http://localhost:5000';
+};
 
-export async function getVehicles(): Promise<Vehicle[]> {
+const API_URL = getApiUrl();
+
+async function getAuthHeaders(): Promise<HeadersInit> {
   const { data: { session } } = await supabase.auth.getSession();
   
-  if (!session) throw new Error('Not authenticated');
-
-  const response = await fetch(`${API_URL}/api/v1/vehicles`, {
-    headers: {
-      'Authorization': `Bearer ${session.access_token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch vehicles');
+  if (!session) {
+    throw new Error('Please log in to continue');
   }
 
-  return response.json();
+  return {
+    'Authorization': `Bearer ${session.access_token}`,
+    'Content-Type': 'application/json',
+  };
+}
+
+function getErrorMessage(response: Response): string {
+  try {
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const error = await response.json();
+      // Try different error formats
+      if (error.detail) return error.detail;
+      if (error.error) return typeof error.error === 'string' ? error.error : error.error.message || 'An error occurred';
+      if (error.message) return error.message;
+      if (error.Data?.Error) return error.Data.Error;
+      return JSON.stringify(error);
+    }
+  } catch {
+    // Fall through to default message
+  }
+  
+  const statusMessages: Record<number, string> = {
+    400: 'Invalid request. Please check your input.',
+    401: 'Your session has expired. Please log in again.',
+    403: 'You do not have permission to perform this action.',
+    404: 'The requested resource was not found.',
+    422: 'Validation error. Please check your input.',
+    429: 'Too many requests. Please try again later.',
+    500: 'Server error. Please try again later.',
+    503: 'Service temporarily unavailable.',
+  };
+  
+  return statusMessages[response.status] || `Request failed (${response.status})`;
+}
+
+export async function getVehicles(): Promise<Vehicle[]> {
+  try {
+    const response = await fetch(`${API_URL}/api/v1/vehicles`, {
+      headers: await getAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error(getErrorMessage(response));
+    }
+
+    const result = await response.json();
+    return result.Data || [];
+  } catch (error) {
+    console.error('Failed to fetch vehicles:', error);
+    throw error instanceof Error ? error : new Error('Failed to load vehicles');
+  }
 }
 
 export async function getVehicle(id: string): Promise<Vehicle> {
-  const { data: { session } } = await supabase.auth.getSession();
-  
-  if (!session) throw new Error('Not authenticated');
+  try {
+    const response = await fetch(`${API_URL}/api/v1/vehicles/${id}`, {
+      headers: await getAuthHeaders(),
+    });
 
-  const response = await fetch(`${API_URL}/api/v1/vehicles/${id}`, {
-    headers: {
-      'Authorization': `Bearer ${session.access_token}`,
-    },
-  });
+    if (!response.ok) {
+      throw new Error(getErrorMessage(response));
+    }
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch vehicle');
+    const result = await response.json();
+    return result.Data;
+  } catch (error) {
+    console.error('Failed to fetch vehicle:', error);
+    throw error instanceof Error ? error : new Error('Failed to load vehicle');
   }
-
-  return response.json();
 }
 
 export async function createVehicle(data: CreateVehicleRequest): Promise<Vehicle> {
-  const { data: { session } } = await supabase.auth.getSession();
-  
-  if (!session) throw new Error('Not authenticated');
+  try {
+    const response = await fetch(`${API_URL}/api/v1/vehicles`, {
+      method: 'POST',
+      headers: await getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
 
-  const response = await fetch(`${API_URL}/api/v1/vehicles`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${session.access_token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
+    if (!response.ok) {
+      throw new Error(getErrorMessage(response));
+    }
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Failed to create vehicle');
+    const result = await response.json();
+    return result.Data;
+  } catch (error) {
+    console.error('Failed to create vehicle:', error);
+    throw error instanceof Error ? error : new Error('Failed to create vehicle');
   }
-
-  return response.json();
 }
 
 export async function updateVehicle(id: string, data: UpdateVehicleRequest): Promise<Vehicle> {
-  const { data: { session } } = await supabase.auth.getSession();
-  
-  if (!session) throw new Error('Not authenticated');
+  try {
+    const response = await fetch(`${API_URL}/api/v1/vehicles/${id}`, {
+      method: 'PUT',
+      headers: await getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
 
-  const response = await fetch(`${API_URL}/api/v1/vehicles/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${session.access_token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
+    if (!response.ok) {
+      throw new Error(getErrorMessage(response));
+    }
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Failed to update vehicle');
+    const result = await response.json();
+    return result.Data;
+  } catch (error) {
+    console.error('Failed to update vehicle:', error);
+    throw error instanceof Error ? error : new Error('Failed to update vehicle');
   }
-
-  return response.json();
 }
 
 export async function deleteVehicle(id: string): Promise<void> {
-  const { data: { session } } = await supabase.auth.getSession();
-  
-  if (!session) throw new Error('Not authenticated');
+  try {
+    const response = await fetch(`${API_URL}/api/v1/vehicles/${id}`, {
+      method: 'DELETE',
+      headers: await getAuthHeaders(),
+    });
 
-  const response = await fetch(`${API_URL}/api/v1/vehicles/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Authorization': `Bearer ${session.access_token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to delete vehicle');
+    if (!response.ok) {
+      throw new Error(getErrorMessage(response));
+    }
+  } catch (error) {
+    console.error('Failed to delete vehicle:', error);
+    throw error instanceof Error ? error : new Error('Failed to delete vehicle');
   }
 }
