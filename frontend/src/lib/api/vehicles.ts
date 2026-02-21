@@ -63,7 +63,7 @@ async function getAuthHeaders(): Promise<HeadersInit> {
   };
 }
 
-function getErrorMessage(response: Response): string {
+async function getErrorMessage(response: Response): Promise<string> {
   try {
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
@@ -100,7 +100,7 @@ export async function getVehicles(): Promise<Vehicle[]> {
     });
 
     if (!response.ok) {
-      throw new Error(getErrorMessage(response));
+      throw new Error(await getErrorMessage(response));
     }
 
     const result = await response.json();
@@ -118,7 +118,7 @@ export async function getVehicle(id: string): Promise<Vehicle> {
     });
 
     if (!response.ok) {
-      throw new Error(getErrorMessage(response));
+      throw new Error(await getErrorMessage(response));
     }
 
     const result = await response.json();
@@ -138,7 +138,7 @@ export async function createVehicle(data: CreateVehicleRequest): Promise<Vehicle
     });
 
     if (!response.ok) {
-      const errorMsg = getErrorMessage(response);
+      const errorMsg = await getErrorMessage(response);
       console.error('Create vehicle failed:', { status: response.status, error: errorMsg });
       throw new Error(errorMsg);
     }
@@ -164,7 +164,7 @@ export async function updateVehicle(id: string, data: UpdateVehicleRequest): Pro
     });
 
     if (!response.ok) {
-      throw new Error(getErrorMessage(response));
+      throw new Error(await getErrorMessage(response));
     }
 
     const result = await response.json();
@@ -183,7 +183,7 @@ export async function deleteVehicle(id: string): Promise<void> {
     });
 
     if (!response.ok) {
-      throw new Error(getErrorMessage(response));
+      throw new Error(await getErrorMessage(response));
     }
   } catch (error) {
     console.error('Failed to delete vehicle:', error);
