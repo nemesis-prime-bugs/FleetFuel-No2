@@ -27,16 +27,13 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore dependencies
-        run: dotnet restore backend/FleetFuel.Api.csproj
+        run: dotnet restore
 
       - name: Build
-        run: dotnet build backend/FleetFuel.Api.csproj --no-restore --verbosity normal
+        run: dotnet build --no-restore --verbosity normal
 
       - name: Run unit tests
-        run: |
-          dotnet test backend.Tests/FleetFuel.Api.Tests.csproj \
-            --no-build \
-            --verbosity normal
+        run: dotnet test --no-build --verbosity normal
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
@@ -62,8 +59,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
         run: npm ci
