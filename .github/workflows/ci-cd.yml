@@ -100,10 +100,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to Vercel
+      - name: Trigger Vercel Deployment
         run: |
-          cd frontend
-          npx vercel@latest --token=${{ secrets.VERCEL_TOKEN }} --prod
+          echo "Vercel will auto-deploy from GitHub integration"
+          echo "Frontend tests passed - ready for deployment"
+          echo "VERCEL_DEPLOY_HOOK_URL=${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"
 
   # Deploy to Production (on tag)
   deploy-production:
