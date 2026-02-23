@@ -83,7 +83,7 @@ try
     builder.Services.AddScoped<ISummaryService, SummaryService>();
     builder.Services.AddScoped<IYearLockService, YearLockService>();
     builder.Services.AddScoped<IAuditLogService, AuditLogService>();
-    builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+    builder.Services.AddScoped<ISubscriptionTrackingService, SubscriptionService>();
     builder.Services.AddScoped<IBackupService, BackupService>();
     builder.Services.AddScoped<IMonitoringService, MonitoringService>();
     builder.Services.AddScoped<ISyncService, SyncService>();

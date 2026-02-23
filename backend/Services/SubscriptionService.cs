@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 namespace FleetFuel.Api.Services;
 
 /// <summary>
-/// Service interface for subscription management and limit enforcement.
+/// Service interface for subscription tracking and limit enforcement.
 /// </summary>
-public interface ISubscriptionService
+public interface ISubscriptionTrackingService
 {
     Task<UserSubscription?> GetSubscriptionAsync(Guid userId);
     Task<UserSubscription> GetOrCreateSubscriptionAsync(Guid userId);
@@ -34,7 +34,7 @@ public enum UsageWarningLevel
 /// <summary>
 /// Service implementation for subscription management.
 /// </summary>
-public class SubscriptionService : ISubscriptionService
+public class SubscriptionService : ISubscriptionTrackingService
 {
     private readonly FleetFuelDbContext _context;
     private readonly ILogger<SubscriptionService> _logger;
