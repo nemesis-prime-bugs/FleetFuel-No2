@@ -100,12 +100,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to Vercel Preview
-        uses: amannn/action-vercel@main
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-args: '--prod=false'
-          working-directory: ./frontend
+      - name: Deploy to Vercel
+        run: |
+          cd frontend
+          npx vercel@latest --token=${{ secrets.VERCEL_TOKEN }} --prod
 
   # Deploy to Production (on tag)
   deploy-production:
