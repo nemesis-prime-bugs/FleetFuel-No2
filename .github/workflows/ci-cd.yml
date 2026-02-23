@@ -149,10 +149,11 @@ jobs:
           echo "Production deployment would happen here"
           echo "Requires VERCEL_TOKEN and VERCEL_PRODUCTION_URL"
 
-      - name: Deploy Backend (Render)
-        run: |
-          echo "Backend production deployment would happen here"
-          echo "Requires RENDER_API_KEY and RENDER_SERVICE_ID"
+      - name: Deploy Backend to Render
+        uses: johnbeynon/render-deploy-action@v0.0.1
+        with:
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
