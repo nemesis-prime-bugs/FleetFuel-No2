@@ -42,10 +42,29 @@ try
     {
         options.AddPolicy("AllowFrontend", policy =>
         {
-            var frontendUrl = builder.Configuration["FRONTEND_URL"] 
-                ?? builder.Configuration["Frontend:Url"] 
+            var configuredOrigins = builder.Configuration["FRONTEND_URL"]
+                ?? builder.Configuration["Frontend:Url"]
                 ?? "http://localhost:3000";
-            policy.WithOrigins(frontendUrl)
+
+            var allowedOrigins = configuredOrigins
+                .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+            policy
+                .SetIsOriginAllowed(origin =>
+                {
+                    if (allowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+
+                    if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                    {
+                        return false;
+                    }
+
+                    return uri.Scheme == Uri.UriSchemeHttps
+                        && uri.Host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase);
+                })
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
