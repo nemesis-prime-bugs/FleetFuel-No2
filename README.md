@@ -2,6 +2,10 @@
 
 A professional fleet management application for tracking vehicles, trips, and fuel expenses. Built with a mobile-first approach, suitable for individuals and small businesses.
 
+**🌐 Live Production:**
+- **Frontend:** https://fleetfuel.vercel.app
+- **Backend:** https://fleetfuel.onrender.com
+
 ![FleetFuel MVP](https://via.placeholder.com/800x400?text=FleetFuel+MVP)
 
 ## Features
@@ -27,23 +31,26 @@ A professional fleet management application for tracking vehicles, trips, and fu
 ## Tech Stack
 
 ### Frontend
-- **Next.js 14** - React framework with App Router
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first styling
+- **Next.js 15** - React framework with App Router
+- **TypeScript 5** - Type-safe development
+- **Tailwind CSS 4** - Utility-first styling
 - **React Hook Form** - Form handling with Zod validation
 - **Supabase Client** - Authentication and API communication
+- **Radix UI** - Accessible component primitives
+- **Vitest** - Unit testing
 
 ### Backend
 - **ASP.NET Core 8** - RESTful API framework
-- **Entity Framework Core** - ORM with SQLite (MVP)
+- **Entity Framework Core** - ORM with SQLite
 - **Repository Pattern** - Clean data access layer
 - **Service Layer** - Business logic encapsulation
+- **xUnit** - Unit testing
 
 ### Infrastructure
-- **Frontend Hosting:** Vercel (free tier)
-- **Backend Hosting:** Render (free tier)
-- **Authentication:** Supabase (free tier)
-- **Database:** SQLite (file-based, bundled with backend)
+- **Frontend Hosting:** Vercel (https://fleetfuel.vercel.app)
+- **Backend Hosting:** Render (https://fleetfuel.onrender.com)
+- **Authentication:** Supabase
+- **Database:** SQLite (MVP), PostgreSQL (Production)
 
 ## Getting Started
 
@@ -193,8 +200,8 @@ FleetFuel-No2/
 - [x] User can log trips for that vehicle
 - [x] User can upload receipts linked to vehicle
 - [x] User can generate yearly CSV summary
-- [x] App is deployed and accessible publicly (pending)
-- [x] Entire system runs on 0€ infrastructure
+- [x] App is deployed and accessible publicly ✅
+- [x] Entire system runs on 0€ infrastructure ✅
 
 ## Post-MVP Features (Out of Scope)
 
@@ -212,6 +219,41 @@ MIT License - feel free to use for personal or commercial projects.
 ## Contributing
 
 Contributions welcome! Please read contributing guidelines before submitting PRs.
+
+---
+
+## Releases
+
+### Latest Release
+See GitHub Releases: https://github.com/nemesis-prime-bugs/FleetFuel-No2/releases
+
+### Version History
+| Version | Date | Description |
+|---------|------|-------------|
+| v0.1.0 | Feb 2026 | MVP - Core fleet management features |
+
+### Package Versions
+
+**Frontend (`frontend/package.json`):**
+```json
+{
+  "next": "^15.5.12",
+  "react": "^19.2.4",
+  "typescript": "^5",
+  "tailwindcss": "^4",
+  "@supabase/supabase-js": "^2.95.3",
+  "zod": "^4.3.6"
+}
+```
+
+**Backend (`backend/FleetFuel.Api.csproj`):**
+```xml
+<PropertyGroup>
+  <TargetFramework>net8.0</TargetFramework>
+  <Nullable>enable</Nullable>
+  <ImplicitUsings>enable</ImplicitUsings>
+</PropertyGroup>
+```
 
 ---
 
