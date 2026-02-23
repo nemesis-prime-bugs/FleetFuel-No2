@@ -80,12 +80,9 @@ public class ExportService : IExportService
                     id = v.Id,
                     name = v.Name,
                     license_plate = v.LicensePlate,
-                    make = v.Make,
-                    model = v.Model,
-                    year = v.Year,
                     initial_mileage = v.InitialMileage,
                     created_at = v.CreatedAt,
-                    updated_at = v.UpdatedAt
+                    updated_at = v.ModifiedAt
                 });
             }
 
@@ -107,11 +104,11 @@ public class ExportService : IExportService
                     id = t.Id,
                     vehicle_id = t.VehicleId,
                     date = t.Date,
-                    distance_km = t.DistanceKm,
+                    start_km = t.StartKm,
+                    end_km = t.EndKm,
+                    calculated_km = t.CalculatedKm,
                     purpose = t.Purpose,
-                    start_location = t.StartLocation,
-                    end_location = t.EndLocation,
-                    notes = t.Notes,
+                    is_business = t.IsBusiness,
                     created_at = t.CreatedAt
                 });
             }
@@ -134,12 +131,11 @@ public class ExportService : IExportService
                     id = r.Id,
                     vehicle_id = r.VehicleId,
                     date = r.Date,
-                    odometer = r.Odometer,
-                    fuel_amount = r.FuelAmount,
-                    price_per_unit = r.PricePerUnit,
-                    total_cost = r.TotalCost,
-                    fuel_station = r.FuelStation,
-                    notes = r.Notes,
+                    amount = r.Amount,
+                    fuel_liters = r.FuelLiters,
+                    fuel_type = r.FuelType,
+                    station_name = r.StationName,
+                    image_path = r.ImagePath,
                     created_at = r.CreatedAt
                 });
             }

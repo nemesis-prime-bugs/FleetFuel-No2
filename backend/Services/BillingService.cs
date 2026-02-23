@@ -50,12 +50,10 @@ public class BillingService : IBillingService
 
         return new SubscriptionInfo
         {
-            Tier = subscription.Tier,
+            Tier = (Api.Models.SubscriptionTier)subscription.Tier,
             CurrentPeriodStart = subscription.CurrentPeriodStart,
             CurrentPeriodEnd = subscription.CurrentPeriodEnd,
-            IsActive = subscription.Status == Data.Enums.AccountStatus.Active,
-            StripeCustomerId = subscription.StripeCustomerId,
-            StripeSubscriptionId = subscription.StripeSubscriptionId
+            IsActive = subscription.Status == Data.Enums.AccountStatus.Active
         };
     }
 
@@ -112,9 +110,9 @@ public class BillingService : IBillingService
         // var session = await stripe.Checkout.Sessions.CreateAsync(...);
         
         var plan = SubscriptionPlans.GetPlans().FirstOrDefault(p => 
-            (p.Id == "free" && newTier == SubscriptionTier.Free) ||
-            (p.Id == "pro" && newTier == SubscriptionTier.Pro) ||
-            (p.Id == "business" && newTier == SubscriptionTier.Business));
+            (p.Id == "free" && newTier == Api.Models.SubscriptionTier.Free) ||
+            (p.Id == "pro" && newTier == Api.Models.SubscriptionTier.Pro) ||
+            (p.Id == "business" && newTier == Api.Models.SubscriptionTier.Business));
 
         return new SubscriptionResponse
         {
@@ -152,7 +150,7 @@ public class BillingService : IBillingService
         if (subscription != null)
         {
             // Downgrade to free tier at end of period
-            subscription.Tier = SubscriptionTier.Free;
+            subscription.Tier = Data.Enums.SubscriptionTier.Free;
             subscription.ModifiedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
         }

@@ -86,7 +86,7 @@ try
     builder.Services.AddScoped<ISubscriptionTrackingService, SubscriptionService>();
     builder.Services.AddScoped<IBackupService, BackupService>();
     builder.Services.AddScoped<IMonitoringService, MonitoringService>();
-    builder.Services.AddScoped<ISyncService, SyncService>();
+    // builder.Services.AddScoped<ISyncService, SyncService>(); // Disabled - needs refactoring
     builder.Services.AddScoped<IDeploymentMonitor, DeploymentMonitor>();
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<ISecurityService, SecurityService>();
@@ -123,13 +123,6 @@ try
 
     // Health check endpoints
     app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
-
-    // Full system health check (includes deployment monitoring)
-    app.MapGet("/health/full", async (IDeploymentMonitor monitor) => 
-    {
-        var report = await monitor.GetFullHealthReportAsync();
-        return Results.Ok(report);
-    });
 
     Log.Information("FleetFuel API started successfully");
     app.Run();

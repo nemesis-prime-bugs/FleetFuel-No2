@@ -216,9 +216,7 @@ public class PrivacyService : IPrivacyService
 
             foreach (var trip in trips)
             {
-                trip.StartLocation = "Deleted";
-                trip.EndLocation = "Deleted";
-                trip.Notes = "Deleted";
+                trip.Purpose = "Deleted";
             }
 
             // Anonymize receipts
@@ -228,8 +226,7 @@ public class PrivacyService : IPrivacyService
 
             foreach (var receipt in receipts)
             {
-                receipt.FuelStation = "Deleted";
-                receipt.Notes = "Deleted";
+                receipt.StationName = "Deleted";
             }
 
             await _context.SaveChangesAsync();
